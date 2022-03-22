@@ -1,20 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package veterinariaestructural;
 
-/**
- *
- * @author Vinicius
- */
+/*
+
+Proyecto para curso de Estructura de Datos 
+
+**Universidad Fidelitas**
+Profesor:
+    Michael Romero Navarro
+
+
+Participantes:
+    Vinicius de Morais Rodrigues
+    Pablo Cesar Calvo Alvarez
+    Christian Fabian Castro Garcia
+    Diego Ignacio Chinchilla Gomez
+*/
 public class VeterinariaEstructural {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        
+        
     }
     
 }
