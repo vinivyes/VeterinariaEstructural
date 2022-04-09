@@ -1,6 +1,7 @@
 package veterinariaestructural;
 
 public class Cola {
+    
     private Nodo frente;
     private Nodo ultimo;
 
