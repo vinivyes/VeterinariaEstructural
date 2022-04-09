@@ -24,6 +24,7 @@ public class VeterinariaEstructural {
         
         System.out.println("Boa noite");
         System.out.println("Boa noite"); 
+        System.out.println("Boa noite");   
     }
     
 }
