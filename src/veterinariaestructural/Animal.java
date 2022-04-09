@@ -9,7 +9,18 @@ package veterinariaestructural;
  * @author Vinicius
  */
 public class Animal {
+    private int id;
     private String nombre;
+    private String raza;
+    private int edad;
+    private String sexo;
+    private String nacimiento;
+    private String color; 
+    private int pesos; 
+    private String sensibilidad; 
+    
+    
+    
 
     public Animal (String _nombre){
         nombre = _nombre;
