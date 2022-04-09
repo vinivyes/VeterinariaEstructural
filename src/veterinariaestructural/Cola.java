@@ -21,6 +21,7 @@ public class Cola {
     }
 
     public void encola(Nodo nuevoNodo){
+        
         if(frente == null){
             frente = nuevoNodo;
             ultimo = nuevoNodo;
