@@ -16,12 +16,18 @@ public class Menu {
     private int opcion;
     
     private Cola colaDeAtencion = new Cola();
+    private ListaDobleCircular inventarioMedicacion = new ListaDobleCircular();
     
     private int id = 1;
     
+    private void CrearPruebas(){
+        colaDeAtencion.encola(new Nodo(new Animal(proximoId(),"Lulu","Poodle",10,"Hembra","Blanca",8.1)));
         colaDeAtencion.encola(new Nodo(new Animal(proximoId(),"Susy","Maltes",8,"Hembra","Beige",10.2)));
         colaDeAtencion.encola(new Nodo(new Animal(proximoId(),"Bruno","French Poodle",10,"Macho","Negra",5.4)));
         colaDeAtencion.encola(new Nodo(new Animal(proximoId(),"Scooby","Chiuaua",4,"Macho","Negro",7.5)));
+        inventarioMedicacion.insertar(new Medicacion(proximoId(),"Acetominofen","Medicamento","SD-32123",10));
+        inventarioMedicacion.insertar(new Medicacion(proximoId(),"Rabia","Vacuna","RB12443A",8));
+        inventarioMedicacion.insertar(new Medicacion(proximoId(),"Iboprofeno","Medicamento","AS123124",5));
     }
     
     public Menu(){
@@ -143,6 +149,10 @@ public class Menu {
         }
     }
     
+    private void MostrarMenuCrearPrescripcion(){
+    
+    }
+    
     private void MostrarMenuMedicaciones(){
 
         String[] opciones = { "Entregar Medicación", "Vacunar Animal", "Volver" };
@@ -195,10 +205,16 @@ public class Menu {
         
         switch(opcion){
             case 0:
+                inventarioMedicacion.insertar(new Medicacion(proximoId()));
+                MostrarMenuInventarioDeMedicación();
                 break;
             case 1:
+                ModificarInventarioDeMedicaciones();
+                MostrarMenuInventarioDeMedicación();
                 break;
             case 2:
+                MostrarInventarioDeMedicaciones();
+                MostrarMenuInventarioDeMedicación();
                 break;
             case 3:
                 MostrarMenuInventario();
@@ -241,5 +257,59 @@ public class Menu {
         salida += "[#"+ a.getId() + "] " + a.getNombre() + " (" + a.getRaza() + ") - " + a.getEdad() + " año(s)\n";
         
         return LeerFilaDeAnimales(c, temp, salida);
+    }
+    
+    
+    private void MostrarInventarioDeMedicaciones(){
+        String salida = "Inventario Actual:\n\n" + inventarioMedicacion.toString();
+                
+        JOptionPane.showMessageDialog(null, salida);
+    }
+    
+    private void ModificarInventarioDeMedicaciones(){
+        int idDelMedicamento = -1;
+        
+        //Ingresar un numero entero para la cantidad, repetir hasta que se ingrese un numero valido
+        do{
+            try{
+                String entrada = JOptionPane.showInputDialog(null,
+                        "Inventario Actual:\n\n" + 
+                        inventarioMedicacion.toString() + "\n\n" +
+                        "Ingrese la el ID del medicamento a modificar:");
+                if(entrada == null){ return; }
+                idDelMedicamento = Integer.parseInt(entrada);
+            }
+            catch(Exception ex){ 
+                idDelMedicamento = -1; 
+            }
+            
+            if(!inventarioMedicacion.existe(idDelMedicamento)){
+                 JOptionPane.showMessageDialog(null, "Medicamento no encontrado, verifique el ID ingresado.");
+                 idDelMedicamento = -1;
+            }
+        }
+        while(idDelMedicamento == -1);
+        
+        Medicacion m = inventarioMedicacion.extrae(idDelMedicamento);
+        
+        int nuevaCantidad = -1;
+        //Ingresar un numero entero para la cantidad, repetir hasta que se ingrese un numero valido
+        do{
+            try{
+                String entrada = JOptionPane.showInputDialog(null,"Ingrese la nueva cantidad de existencias del medicamento:");
+                
+                if(entrada == null){ 
+                    inventarioMedicacion.insertar(m);
+                    return; 
+                }
+                nuevaCantidad = Integer.parseInt(entrada);
+            }
+            catch(Exception ex){ nuevaCantidad = -1; }
+        }
+        while(nuevaCantidad == -1);
+        
+        m.setCantidad(nuevaCantidad);
+        
+        inventarioMedicacion.insertar(m);
     }
 }
