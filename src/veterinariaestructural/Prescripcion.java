@@ -10,4 +10,22 @@ package veterinariaestructural;
  */
 public class Prescripcion {
     private ListaDobleCircular medicacionesSolicitadas = new ListaDobleCircular();
+    private Animal animal;
+    
+    public Prescripcion(Animal _animal){
+        animal = _animal;
+    }
+    
+    public ListaDobleCircular getMedicacionesSolicitadas() {
+        return medicacionesSolicitadas;
+    }
+
+    public void setMedicacionesSolicitadas(ListaDobleCircular medicacionesSolicitadas) {
+        this.medicacionesSolicitadas = medicacionesSolicitadas;
+    }
+
+    public Animal getAnimal() {
+        return animal;
+    }
+    
 }

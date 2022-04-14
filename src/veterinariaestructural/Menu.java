@@ -17,6 +17,9 @@ public class Menu {
     
     private Cola colaDeAtencion = new Cola();
     private ListaDobleCircular inventarioMedicacion = new ListaDobleCircular();
+    private Cola colaDeEntregaDeMedicacion = new Cola();
+    private Cola colaDeVacunacion = new Cola();
+    private Pila pilaDeVacunasAplicadas = new Pila();
     
     private int id = 1;
     
@@ -138,10 +141,10 @@ public class Menu {
 
         switch(opcion){
             case 0:
-                MostrarMenuConsultas();
+                MostrarMenuCrearPrescripcion(a);
                 break;
             case 1:
-                MostrarMenuConsultas();
+                MostrarMenuSolicitaVacunacion(a);
                 break;
             case 2:
                 MostrarMenuConsultas();
@@ -149,8 +152,73 @@ public class Menu {
         }
     }
     
-    private void MostrarMenuCrearPrescripcion(){
+    private void MostrarMenuCrearPrescripcion(Animal a){
+        Medicacion[] medicaciones = inventarioMedicacion.leerInventarioDeMedicaciones();
+        if(medicaciones.length == 0){ 
+            JOptionPane.showMessageDialog(null, "No hay registros de medicamentos en el inventario, no es posible crear prescripcion");
+            return;
+        }
+        Medicacion seleccion = null;
+        Prescripcion prescripcion = new Prescripcion(a);
+        do{
+            seleccion = (Medicacion) JOptionPane.showInputDialog(null, "Prescripción actual:\n"+prescripcion.getMedicacionesSolicitadas().leerSolicitudes("No se ha prescrito ningun medicamento.")+"\n\nCual medicamento desea prescribir:",
+               "Prescripcion Actual", JOptionPane.QUESTION_MESSAGE, null, // Use
+                                                                               // default
+                                                                               // icon
+               medicaciones, // Array of choices
+               medicaciones[0]); // Initial choice
+
+            if(seleccion == null) { break; }
+            
+            int cantidadPrescrita = -1;
+
+            //Ingresar un numero entero para la cantidad de medicamentos a prescribir, el loop lo hace repetir hasta que se ingrese un numero valido
+            do{
+               try{
+                   cantidadPrescrita = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese la cantidad de "+seleccion.getNombre()+" a prescribir:"));
+               }
+               catch(Exception ex){ cantidadPrescrita = -1; }
+            }
+            while(cantidadPrescrita < 0);
+
+            Medicacion medPrescrita = new Medicacion(seleccion.getId(), seleccion.getNombre(),  seleccion.getTipo(), seleccion.getLote(), cantidadPrescrita);
+            
+            prescripcion.getMedicacionesSolicitadas().insertar(medPrescrita);
+        }
+        while(seleccion != null);
+
+        colaDeEntregaDeMedicacion.encola(new Nodo(prescripcion));
+        MostrarMenuConsultaActiva(a);
+      
+    }
     
+    private void MostrarMenuSolicitaVacunacion(Animal a){
+        Medicacion[] vacunas = inventarioMedicacion.leerInventarioDeVacunas();
+        if(vacunas.length == 0){ 
+            JOptionPane.showMessageDialog(null, "No hay registros de vacunas en el inventario, no es posible solicitar vacunacion");
+            return;
+        }
+        Medicacion seleccion = null;
+        Vacuna solicitudDeVacunas = new Vacuna(a);
+        do{
+            seleccion = (Medicacion) JOptionPane.showInputDialog(null, "Solicitud de Vacunación actual:\n"+solicitudDeVacunas.getVacunasSolicitadas().leerSolicitudes("No se ha solicitado ninguna vacuna")+"\n\nCual vacuna desea solicitar:",
+               "Solicitud de Vacunación", JOptionPane.QUESTION_MESSAGE, null, // Use
+                                                                               // default
+                                                                               // icon
+               vacunas, // Array of choices
+               vacunas[0]); // Initial choice
+
+            if(seleccion == null) { break; }
+            
+            Medicacion vacunaSolicitada = new Medicacion(seleccion.getId(), seleccion.getNombre(), seleccion.getTipo(),seleccion.getLote(),  1);
+            
+            solicitudDeVacunas.getVacunasSolicitadas().insertar(vacunaSolicitada);
+        }
+        while(seleccion != null);
+
+        colaDeVacunacion.encola(new Nodo(solicitudDeVacunas));
+        MostrarMenuConsultaActiva(a);
+      
     }
     
     private void MostrarMenuMedicaciones(){
@@ -164,8 +232,56 @@ public class Menu {
         
         switch(opcion){
             case 0:
+                Nodo siguiente = colaDeEntregaDeMedicacion.atiende();
+                
+                if(siguiente == null) {
+                    JOptionPane.showMessageDialog(null, "No hay prescripciones esperando entrega");
+                    MostrarMenuMedicaciones();
+                }
+                else{
+                    Prescripcion p = (Prescripcion)siguiente.getElemento();
+                
+                
+                    JOptionPane.showMessageDialog(null, "Entregando Prescripcion a " + p.getAnimal().getNombre() + ":\n" + p.getMedicacionesSolicitadas().leerSolicitudes("No se prescribió ninguna medicación."));
+
+                    Medicacion[] medicacionAEntregar = p.getMedicacionesSolicitadas().leerInventarioDeMedicaciones();
+
+                    for(int i = 0; i < medicacionAEntregar.length; i++){
+                        Medicacion mp = medicacionAEntregar[i];
+                        Medicacion mi = inventarioMedicacion.extrae(mp.getId());
+                        mi.entregarMedicacion(mp.getCantidad());
+                        inventarioMedicacion.insertar(mi);
+                        
+                    }
+                    MostrarMenuMedicaciones();
+                }                
                 break;
             case 1:
+                Nodo siguienteVac = colaDeVacunacion.atiende();
+                
+                if(siguienteVac == null) {
+                    JOptionPane.showMessageDialog(null, "No hay animales esperando vacunacion");
+                    MostrarMenuMedicaciones();
+                }
+                else{
+                    Vacuna v = (Vacuna)siguienteVac.getElemento();
+                
+                
+                    JOptionPane.showMessageDialog(null, "Vacunando a " + v.getAnimal().getNombre() + ":\n" + v.getVacunasSolicitadas().leerSolicitudes("No se solicitó ninguna vacuna."));
+
+                    Medicacion[] vacunasAplicar = v.getVacunasSolicitadas().leerInventarioDeVacunas();
+
+                    for(int i = 0; i < vacunasAplicar.length; i++){
+                        Medicacion mp = vacunasAplicar[i];
+                        Medicacion mi = inventarioMedicacion.extrae(mp.getId());
+                        Medicacion vacunaAplicada = mi.aplicarVacuna(mp.getCantidad());
+                        if(vacunaAplicada != null){
+                            pilaDeVacunasAplicadas.push(new Nodo(vacunaAplicada));
+                        }
+                        inventarioMedicacion.insertar(mi);
+                    }
+                    MostrarMenuMedicaciones();
+                }
                 break;
             case 2:
                 MostrarMenuPrincipal();
@@ -187,6 +303,22 @@ public class Menu {
                 MostrarMenuInventarioDeMedicación();
                 break;
             case 1:
+                Nodo siguiente = pilaDeVacunasAplicadas.pop();
+                
+                if(siguiente == null) {
+                    JOptionPane.showMessageDialog(null, "No hay vacunas a desechar");
+                    MostrarMenuInventario();
+                }
+                else{
+                    do{
+                        Medicacion v = (Medicacion)siguiente.getElemento();
+           
+                        JOptionPane.showMessageDialog(null, "Desechando a vacuna ya aplicada:\nNombre:" + v.getNombre() + "\nLote:" + v.getLote());
+                        siguiente = pilaDeVacunasAplicadas.pop();
+                    }
+                    while(siguiente != null);
+                    MostrarMenuInventario();
+                }
                 break;
             case 2:
                 MostrarMenuPrincipal();

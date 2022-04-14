@@ -16,11 +16,10 @@ public class Animal {
     private String raza;
     private int edad = -1;
     private String sexo = "";
-    //private String nacimiento;
     private String color; 
     private double peso; 
-    //private String sensibilidades; 
     
+    //Constructor para crear un nuevo animal, recibe un ID y inicia una sequencia de entradas con JOptionPane para llenar todas las propriedades del Animal
     public Animal (int _id){
         id = _id;
         
@@ -34,24 +33,25 @@ public class Animal {
                 "Ingrese la raza del animal:"
         );
         
-        //Ingresar un numero entero para la edad, repetir hasta que se ingrese un numero valido
+        //Ingresar un numero entero para la edad, el loop lo hace repetir hasta que se ingrese un numero valido
         do{
             try{
                 edad = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese la edad del animal:"));
             }
             catch(Exception ex){ edad = -1; }
         }
-        while(edad == -1);
+        while(edad < 0);
                 
         //Lista de opciones para ingresar a la propriedad sexo
         String[] opcionSexo = { "Macho", "Hembra" };
 
-        //El resultado del JOptionPane es un entero (0 o 1) y eso se utiliza para leer la opcion seleccionada desde de el arreglo de opcionSexo (linea 47)
+        //El resultado del JOptionPane es un entero (0 o 1) y eso se utiliza para leer la opcion seleccionada desde de el arreglo de opcionSexo (linea 46)
+        //El loop lo hace repetir la solicitud hasta recibir una entrada valida.
         do{
             try{
                 sexo = opcionSexo[
                     JOptionPane.showOptionDialog(null,
-                        "Qual es el sexo del animal:",
+                        "Cual es el sexo del animal:",
                         null,
                     0, JOptionPane.INFORMATION_MESSAGE, null, opcionSexo, opcionSexo[0])
                 ];
@@ -65,14 +65,16 @@ public class Animal {
                 "Ingrese el color del animal:"
         );
         
+        //Ingresar un numero con decimales para el peso, el loop lo hace repetir hasta que se ingrese un numero valido
         do{
             try{
-                peso = Double.parseDouble(JOptionPane.showInputDialog(null,"Ingrese el peso del animal:"));
+                peso = Double.parseDouble(JOptionPane.showInputDialog(null,"Ingrese el peso del animal en KG:"));
             }
             catch(Exception ex){ peso = -1; }
         }
-        while(peso == -1);
+        while(peso < 0);
         
+        //Un mensaje detallando los datos ingresados
         JOptionPane.showMessageDialog(null, 
                 "Se registró el animal #"+id+":\n\n" +
                 "Nombre: "+nombre+"\n" +
@@ -83,6 +85,7 @@ public class Animal {
                 "Peso: "+peso+"kg");
     }
     
+    //Crea un Animal que recibe todas las propriedades, puede ser utilizado para pruebas.
     public Animal (int _id, String _nombre, String _raza, int _edad, String _sexo, String _color, double _peso){
         id = _id;
         nombre = _nombre;
@@ -93,26 +96,22 @@ public class Animal {
         peso = _peso;
     }
 
+    //Getters
     public int getId() {
         return id;
     }
-
     public String getRaza() {
         return raza;
     }
-
     public int getEdad() {
         return edad;
     }
-
     public String getSexo() {
         return sexo;
     }
-
     public String getColor() {
         return color;
     }
-
     public double getPeso() {
         return peso;
     }
@@ -120,6 +119,7 @@ public class Animal {
         return nombre;
     }
 
+    //Setters
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

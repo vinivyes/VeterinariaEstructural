@@ -77,13 +77,36 @@ public class Medicacion {
         if(entregarCantidad > cantidad){
             JOptionPane.showMessageDialog(null, "No hay existencias suficientes de " + nombre + " en el inventario de la veterinaria.");
         }
+        else{
+            JOptionPane.showMessageDialog(null, "Se entregan " + entregarCantidad + " - " + nombre);
+        }
         
         Medicacion m = new Medicacion(id,nombre,tipo,lote,entregarCantidad);
         
         cantidad -= entregarCantidad;
         
+        
         return m;
     }
+    
+        //Hace una copia de la medicacion con la cantidad a entregar
+    public Medicacion aplicarVacuna(int entregarCantidad){
+        if(entregarCantidad > cantidad){
+            JOptionPane.showMessageDialog(null, "No hay existencias suficientes de la vacuna " + nombre + " en el inventario de la veterinaria.");
+            return null;
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Se aplica la vacuna " + nombre);
+        }
+        
+        Medicacion m = new Medicacion(id,nombre,tipo,lote,entregarCantidad);
+        
+        cantidad -= entregarCantidad;
+        
+        
+        return m;
+    }
+    
 
     public int getId() {
         return id;
@@ -112,6 +135,10 @@ public class Medicacion {
     @Override
     public String toString(){
         return "[#"+ getId() + "] " + getNombre() + " (" + getTipo() + ") - Existencias: " + getCantidad();         
+    }
+    
+    public String toStringSolicitud(){
+        return "[#"+ getId() + "] " + getNombre() + " - Cantidad Solicitada: " + getCantidad();         
     }
 
 }

@@ -12,20 +12,20 @@ package veterinariaestructural;
  public class Pila 
 {    
  
-    private NodoA top;
+    private Nodo top;
 
-    public NodoA getTop() {
+    public Nodo getTop() {
         return top;
     }
     
     
-    public void push(NodoA elementoNuevo){
+    public void push(Nodo elementoNuevo){
         elementoNuevo.setAbajo(top);
         top = elementoNuevo;
     }
     
-    public NodoA pop(){
-        NodoA aux = top;
+    public Nodo pop(){
+        Nodo aux = top;
         if(PilaVacia()){
             System.out.println("No hay datos en la pila");
         }else{

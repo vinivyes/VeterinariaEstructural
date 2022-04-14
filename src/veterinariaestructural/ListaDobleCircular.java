@@ -24,6 +24,14 @@ public class ListaDobleCircular {
     public void insertar(Medicacion p){
         
         if(existe(p.getId())) {
+            Medicacion existente = extrae(p.getId());
+            if(existente.getTipo().equals("Vacuna")){
+                JOptionPane.showMessageDialog(null, "No es posible solicitar más de una vacuna del mismo tipo");
+            }
+            else{
+                existente.setCantidad(existente.getCantidad() + p.getCantidad());
+            }
+            insertar(existente);
             return;
         }
         
@@ -119,7 +127,7 @@ public class ListaDobleCircular {
     }
     
     
-    //Extrae la persona
+    //Extrae la medicion
     public Medicacion extrae(int id) {
         
         if(existe(id)){ count--; }
@@ -190,4 +198,77 @@ public class ListaDobleCircular {
                    
         return output;           
     }
+    
+      
+    public String leerSolicitudes(String textoVacio){
+         
+        Nodo aux = cabeza;
+        String output = "";
+        
+        if(cabeza == null){
+            return output + textoVacio;
+        }
+        
+        do{
+            output += ((Medicacion)aux.getElemento()).toStringSolicitud() + "\n";
+            aux = aux.getPrevious();
+        }
+        while(aux != cabeza);
+                   
+        return output;           
+    }
+        
+    public Medicacion[] leerInventarioDeVacunas(){
+                
+        Nodo aux = cabeza;
+        Medicacion[] output = {};
+        
+        if(cabeza == null){
+            return output;
+        }
+        
+        do{
+            if(((Medicacion)aux.getElemento()).getTipo().equals("Vacuna")){
+                Medicacion[] temp_output = new Medicacion[output.length + 1];
+                for(int i = 0; i < output.length; i++) { 
+                    temp_output[i] = output[i]; 
+                }
+
+                temp_output[output.length] = (Medicacion)aux.getElemento();
+                output = temp_output;
+            }
+
+            aux = aux.getPrevious();
+        }
+        while(aux != cabeza);
+                   
+        return output;  
+    } 
+    
+    public Medicacion[] leerInventarioDeMedicaciones(){
+                
+        Nodo aux = cabeza;
+        Medicacion[] output = {};
+        
+        if(cabeza == null){
+            return output;
+        }
+        
+        do{
+            if(((Medicacion)aux.getElemento()).getTipo().equals("Medicamento")){
+                Medicacion[] temp_output = new Medicacion[output.length + 1];
+                for(int i = 0; i < output.length; i++) { 
+                    temp_output[i] = output[i]; 
+                }
+
+                temp_output[output.length] = (Medicacion)aux.getElemento();
+                output = temp_output;
+            }
+
+            aux = aux.getPrevious();
+        }
+        while(aux != cabeza);
+                   
+        return output;  
+    } 
 }
