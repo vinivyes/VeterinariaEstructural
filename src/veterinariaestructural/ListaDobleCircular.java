@@ -148,14 +148,18 @@ public class ListaDobleCircular {
         Nodo aux = cabeza;
         do{ 
             //Si el siguiente elemento es el que buscamos
-            if(((Medicacion)aux.getPrevious().getElemento()).getId() == id) { 
-                p = (Medicacion)aux.getPrevious().getElemento();  //Guardamos la informacion del siguiente elemento
-                aux.setPrevious(aux.getPrevious().getPrevious()); //El siguiente al elemento actual es el que esta a 2 casas hacia adelante
-                aux.getPrevious().getPrevious().setNext(aux); //El elemento anterior al que esta a 2 casas es el actual
+            if(((Medicacion)aux.getElemento()).getId() == id) { 
+                p = (Medicacion)aux.getElemento();  //Guardamos la informacion del siguiente elemento
                 
+                if(aux == ultimo){
+                    ultimo = aux.getNext();
+                }
+                
+                aux.getNext().setPrevious(aux.getPrevious());
+                aux.getPrevious().setNext(aux.getNext());
                 return p;
             }
-            aux = aux.getPrevious();  //Seguimos moviendo hacia el siguiente elemento
+            aux = aux.getNext();  //Seguimos moviendo hacia el siguiente elemento
         }
         while(aux != cabeza);
         

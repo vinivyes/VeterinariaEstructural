@@ -246,13 +246,8 @@ public class Menu {
 
                     Medicacion[] medicacionAEntregar = p.getMedicacionesSolicitadas().leerInventarioDeMedicaciones();
 
-                    for(int i = 0; i < medicacionAEntregar.length; i++){
-                        Medicacion mp = medicacionAEntregar[i];
-                        Medicacion mi = inventarioMedicacion.extrae(mp.getId());
-                        mi.entregarMedicacion(mp.getCantidad());
-                        inventarioMedicacion.insertar(mi);
-                        
-                    }
+                    EntregarMedicacionRecursivo(medicacionAEntregar, 0);
+                    
                     MostrarMenuMedicaciones();
                 }                
                 break;
@@ -310,13 +305,8 @@ public class Menu {
                     MostrarMenuInventario();
                 }
                 else{
-                    do{
-                        Medicacion v = (Medicacion)siguiente.getElemento();
-           
-                        JOptionPane.showMessageDialog(null, "Desechando a vacuna ya aplicada:\nNombre:" + v.getNombre() + "\nLote:" + v.getLote());
-                        siguiente = pilaDeVacunasAplicadas.pop();
-                    }
-                    while(siguiente != null);
+                    System.out.print("");
+                    DesecharVacunasRecursivo(siguiente);
                     MostrarMenuInventario();
                 }
                 break;
@@ -324,6 +314,31 @@ public class Menu {
                 MostrarMenuPrincipal();
                 break;
         }
+    }
+    
+    private void EntregarMedicacionRecursivo(Medicacion[] medicacionAEntregar, int i){
+        if(medicacionAEntregar.length <= i){
+            return;
+        }
+        
+        Medicacion mp = medicacionAEntregar[i];
+        Medicacion mi = inventarioMedicacion.extrae(mp.getId());
+        mi.entregarMedicacion(mp.getCantidad());
+        inventarioMedicacion.insertar(mi);
+        
+        EntregarMedicacionRecursivo(medicacionAEntregar, i+1);
+    }
+    
+    private void DesecharVacunasRecursivo(Nodo siguiente){
+        if(siguiente == null){
+            return;
+        }
+        
+        Medicacion v = (Medicacion)siguiente.getElemento();
+
+        JOptionPane.showMessageDialog(null, "Desechando a vacuna ya aplicada:\nNombre:" + v.getNombre() + "\nLote:" + v.getLote());
+            
+        DesecharVacunasRecursivo(pilaDeVacunasAplicadas.pop());
     }
     
     private void MostrarMenuInventarioDeMedicación(){
@@ -390,7 +405,6 @@ public class Menu {
         
         return LeerFilaDeAnimales(c, temp, salida);
     }
-    
     
     private void MostrarInventarioDeMedicaciones(){
         String salida = "Inventario Actual:\n\n" + inventarioMedicacion.toString();
